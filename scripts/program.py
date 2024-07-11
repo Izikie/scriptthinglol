@@ -1,8 +1,29 @@
+import subprocess
+
 def secure_ssh():
-    print("Secure SSH")
+    """Configure OpenSSH with more secure settings"""
 
 def firewall():
-    print("Firewall")
+    """Configure firewall (UFW) with secure settings"""
 
+# TODO: Scan extentions from a configuration file
+file_extensions = [
+    # Video
+	"mp4" "mpeg" "avi" "mpg" "webm" "mov" "wav"
+	# Pictures
+	"png" "jpg" "jpeg" "gif" "bmp" "tiff" "raw"
+	# Audio
+	"mp3" "ogg" "m4a" "flac"
+	# Misc
+	"txt" "docx" "pdf" "doc" "ppt" "pptx" "xls" "ps"
+]
+
+files_found = 0
 def file_scan():
-    print("File Scan")
+    """Scans the file system for files with specific extensions"""
+    files_found = 0
+
+def program_all():
+    secure_ssh()
+    firewall()
+    file_scan()

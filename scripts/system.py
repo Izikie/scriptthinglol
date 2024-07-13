@@ -1,4 +1,3 @@
-import subprocess as sys
 from utils import *
 
 def update_system():
@@ -7,27 +6,30 @@ def update_system():
 
 def disable_root():
     """Disable the root user account"""
-    sys.run(["sudo", "passwd", "-l", "root"], check=True)
-    print("Root account has been disabled")
+    run(["passwd", "-l", "root"])
+    printSuccess("Root account has been disabled")
 
 def shadow_permissions():
     """Set shadow folder permission"""
-    sys.run(["sudo", "chmod", "640", "/etc/shadow"], check=True)
-    print("Shadow permissions have been set")
+    run(["chmod", "640", "/etc/shadow"])
+    printSuccess("Shadow permissions have been set")
     
 def password_policy():
     """Set password system policy"""
-    # TODO: Implement password policy
+    # TODO: Implement
 
 def sudoers():
     """Check sudoers file for no authentication & set permissions"""
-    # TODO: Implement sudoers no auth file check
-    sys.run(["sudo", "chmod", "0440", "/etc/sudoers"], check=True)
-    printSuccess("Sudoers permissions has been secured")
+    result = run(["grep", "NOPASSWD\\|!authenticate", "/etc/sudoers"])
 
-def network_configuration():
-    """Configure networks settings for security"""
-    # TODO: Implement
+    if result.returncode == 0:
+        printWarning("Insecure sudoers file found (NOPASSWD or !authenticate)")
+        # TODO: Implement fix
+    else:
+        printSuccess("Sudoers file is secure")
+
+    run(["chmod", "0440", "/etc/sudoers"])
+    printSuccess("Sudoers permissions has been set")
 
 def system_all():
     update_system()

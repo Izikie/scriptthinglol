@@ -24,10 +24,6 @@ system_options = {
         "function": sudoers
     },
     6: {
-        "name": "Network Configuration",
-        "function": network_configuration
-    },
-    7: {
         "name": "All",
         "function": system_all
     }
@@ -56,6 +52,7 @@ program_options = {
 }
 
 def print_header():
+    printFailed("\nTHIS IS ENTERLY UNTESTED AT THE MOMENT. DO NOT USE\n")
     # TODO: Add a fancy ascii art header
     print("1. System Options")
     print("2. Program Options")
@@ -78,4 +75,5 @@ while True:
 
     if script in selected:
         selected[script]["function"]()
+
     print()

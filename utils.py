@@ -1,13 +1,24 @@
+from subprocess import sys
+
 def int_input(message, min=None, max=None):
     while True:
         try:
             value = int(input(message + ' '))
+
             if (min is not None and value < min) or (max is not None and value > max):
                 print(f"Please enter a number between {min} and {max}.")
             else:
                 return value
         except ValueError:
-            print("Invalid input. Please enter a valid number.")
+            printFailed("Invalid input. Please enter a valid number.")
+
+def prompt_input(message):
+    while True:
+        value = input(message + ' (y/n) ').lower()
+
+        if value in ['y', 'n', 'yes', 'no']:
+            return value == 'y' or value == "yes"
+        printFailed("Invalid input. Please enter a valid value.")
 
 def printSuccess(message):
     print(f"\033[92m{message}\033[00m")
@@ -17,3 +28,12 @@ def printWarning(message):
 
 def printFailed(message):
     print(f"\033[91m{message}\033[00m")
+
+# TODO: add proper error handling
+def run(cmd, error=True, output=False):
+    try:
+        return sys.run(["sudo", *cmd], check=error, output=output)
+    except sys.CalledProcessError as e:
+        printFailed(f"Failed to run command: {' '.join(cmd)}")
+        printFailed(f"Error: {e}")
+        exit(1)

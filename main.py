@@ -1,5 +1,6 @@
 from scripts.system import *
 from scripts.program import *
+from utils import *
 
 system_options = {
     1: {
@@ -19,10 +20,14 @@ system_options = {
         "function": password_policy
     },
     5: {
+        "name": "Sudoers File",
+        "function": sudoers
+    },
+    6: {
         "name": "Network Configuration",
         "function": network_configuration
     },
-    6: {
+    7: {
         "name": "All",
         "function": system_all
     }
@@ -41,47 +46,36 @@ program_options = {
         "function": file_scan
     },
     4: {
+        "name": "Service Cleanup",
+        "function": service_cleanup
+    },
+    5: {
         "name": "All",
         "function": program_all
     }
 }
 
-def int_input(message, min=None, max=None):
-    while True:
-        try:
-            value = int(input(message + ' '))
-            if (min is not None and value < min) or (max is not None and value > max):
-                print(f"Please enter a number between {min} and {max}.")
-            else:
-                return value
-        except ValueError:
-            print("Invalid input. Please enter a valid number.")
+def print_header():
+    # TODO: Add a fancy ascii art header
+    print("1. System Options")
+    print("2. Program Options")
+    print("3. Exit")
 
 while True:
-    print("Select an option:")
-    print("\t1. System Options")
-    print("\t2. Program Options")
-    print("\t3. Exit")
+    print_header()
+    category = int_input("\nCategory:", 1 , 3)
 
-    category_choice = int_input("Enter your choice:")
-
-    if category_choice == 3:
+    if category == 3:
         break
 
-    options = system_options if category_choice == 1 else program_options
+    selected = system_options if category == 1 else program_options
 
-    if options is None:
-        print("> Invalid category")
-        continue
+    print(f"\n{'-' * 30}\n")
+    for key, value in selected.items():
+        print(f"{key}. {value['name']}")
 
-    print("Select an option:")
-    for key, value in options.items():
-        print(f"\t{key}. {value['name']}")
+    script = int_input("\nScript:", 1, len(selected))
 
-    option_choice = int_input("Enter your choice:")
-
-    if option_choice in options:
-        options[option_choice]["function"]()
-    else:
-        print("> Invalid choice")
+    if script in selected:
+        selected[script]["function"]()
     print()

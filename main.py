@@ -52,7 +52,7 @@ program_options = {
 }
 
 def print_header():
-    printFailed("\nTHIS IS ENTERLY UNTESTED AT THE MOMENT. DO NOT USE\n")
+    printFailed("THIS IS ENTERLY UNTESTED AT THE MOMENT. DO NOT USE\n")
     # TODO: Add a fancy ascii art header
     print("1. System Options")
     print("2. Program Options")

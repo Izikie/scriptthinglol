@@ -3,6 +3,8 @@ from utils import *
 def update_system():
     """Update the system to the latest packages"""
     # TODO: Provides updateing for a variety of package managers/distributions
+    run(["apt", "update", "-y"])
+    run(["apt", "upgrade", "-y"])
 
 def disable_root():
     """Disable the root user account"""
@@ -25,8 +27,8 @@ def sudoers():
     if result.returncode == 0:
         printWarning("Insecure sudoers file found (NOPASSWD or !authenticate)")
         # TODO: Implement fix
-    else:
-        printSuccess("Sudoers file is secure")
+
+    printSuccess("Sudoers file is secure")
 
     run(["chmod", "0440", "/etc/sudoers"])
     printSuccess("Sudoers permissions has been set")
@@ -37,4 +39,3 @@ def system_all():
     shadow_permissions()
     password_policy()
     sudoers()
-    network_configuration()

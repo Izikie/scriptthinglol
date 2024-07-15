@@ -1,4 +1,4 @@
-from subprocess import sys
+import subprocess as sys
 
 def int_input(message, min=None, max=None):
     while True:
@@ -32,8 +32,17 @@ def printFailed(message):
 # TODO: add proper error handling
 def run(cmd, error=True, output=False):
     try:
-        return sys.run(["sudo", *cmd], check=error, output=output)
+        return sys.run(["sudo", *cmd], check=error, capture_output=output)
     except sys.CalledProcessError as e:
         printFailed(f"Failed to run command: {' '.join(cmd)}")
         printFailed(f"Error: {e}")
         exit(1)
+
+def installPackage(package):
+    if run(["dpkg", "-l", "|", "grep", "-q", package], output=True).returncode != 0:
+        printWarning(f"Installing {package}...")
+        # TODO: Support multiple package managers
+        run(["sudo", "apt", "install", package, "-yq"])
+        printSuccess(f"{package} has been installed")
+    else:
+        printWarning(f"{package} is already installed")

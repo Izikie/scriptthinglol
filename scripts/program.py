@@ -1,4 +1,5 @@
 import subprocess as sys
+from utils import *
 
 def secure_ssh():
     """Configure OpenSSH with more secure settings"""
@@ -7,7 +8,7 @@ def secure_ssh():
     
     # Backup OpenSSH config
     run(["cp", "/etc/ssh/sshd_config", "/etc/ssh/sshd_config.bak"])
-    printSuccess("Config backup has been created (/etc/ssh/sshd_config.bak)")
+    printWarning("Config backup has been created (/etc/ssh/sshd_config.bak)")
 
     settings = { # TODO: Add more settings
         "PermitRootLogin": "no",
@@ -30,7 +31,7 @@ def secure_ssh():
     printSuccess("SSH service has been secured")
 
 def firewall():
-    """Configure firewall (UFW) with secure settings"""
+    """Configure firewalL/sysctl network settings"""
     installPackage("ufw")
 
     run(["ufw", "enable"])
@@ -39,8 +40,50 @@ def firewall():
     run(["ufw", "logging", "on"])
     printSuccess("Firewall logging has been enabled")
 
-    # TODO: Sysctl settings
-    printSuccess("Firewall has been secured")
+    while True:
+        port = int_input("Enter a port (0 to continue)", 0, 65535) or 0
+        if port == 0:
+            break
+
+        run(["ufw", "allow", str(port)])
+
+    while True:
+        service = input("Enter a service (0 to continue) ") or '0'
+        if service == "0":
+            break
+
+        run(["ufw", "allow", service])
+
+    while True:
+        ip = input("Enter an IP address (0 to continue) ") or '0'
+        if ip == "0":
+            break
+
+        run(["ufw", "allow", f"from {ip}"])
+
+    # Sysctl settings
+    run(["cp", "/etc/sysctl.conf", "/etc/sysctl.bak"])
+    printWarning("Config backup has been created (/etc/sysctl.conf.bak)")
+
+    settings = {
+        "net.ipv4.conf.default.rp_filter": "1",
+        "net.ipv4.conf.all.rp_filter": "1",
+
+        "net.ipv4.conf.all.accept_redirects": "0",
+        "net.ipv4.conf.all.send_redirects": "0",
+        "net.ipv4.conf.all.accept_source_route": "0",
+        "net.ipv4.conf.all.log_martians": "1",
+        "net.ipv4.ip_forward": "0",
+        "net.ipv4.tcp_syncookies": "1",
+        "net.ipv6.conf.all.disable_ipv6": "1",
+    }
+
+    for setting, value in settings.items():
+        run(["sed", "-i", f"s/^#*{settings} .*/{settings}={value}/", "/etc/sysctl.conf"])
+
+    run(["sysctl", "-p"])
+
+    printSuccess("Firewall/Network has been secured")
 
 # TODO: Scan extentions from a configuration file
 file_extensions = [

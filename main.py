@@ -52,8 +52,18 @@ program_options = {
 }
 
 def print_header():
-    printFailed("THIS IS ENTERLY UNTESTED AT THE MOMENT. DO NOT USE\n")
     # TODO: Add a fancy ascii art header
+    printSuccess('#' * 45)
+    printSuccess("""\n    _/_/_/    _/                               
+   _/    _/  _/    _/_/      _/_/    _/_/_/    
+  _/_/_/    _/  _/_/_/_/  _/_/_/_/  _/    _/   
+ _/    _/  _/  _/        _/        _/    _/    
+_/_/_/    _/    _/_/_/    _/_/_/  _/_/_/       
+                                 _/            
+                                _/
+""")
+    printFailed("THIS IS ENTERLY UNTESTED AT THE MOMENT. DO NOT USE\n")
+    printSuccess('#' * 45)
     print("1. System Options")
     print("2. Program Options")
     print("3. Exit")
@@ -67,7 +77,7 @@ while True:
 
     selected = system_options if category == 1 else program_options
 
-    print(f"\n{'-' * 30}\n")
+    printSuccess(f"\n{'#' * 30}\n")
     for key, value in selected.items():
         print(f"{key}. {value['name']}")
 

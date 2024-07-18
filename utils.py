@@ -42,7 +42,7 @@ def installPackage(package):
     if run(["dpkg", "-l", "|", "grep", "-q", package], output=True).returncode != 0:
         printWarning(f"Installing {package}...")
         # TODO: Support multiple package managers
-        run(["sudo", "apt", "install", package, "-yq"])
+        run(["apt", "install", package, "-yq"])
         printSuccess(f"{package} has been installed")
     else:
         printWarning(f"{package} is already installed")

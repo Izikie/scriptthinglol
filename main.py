@@ -4,57 +4,53 @@ from utils import *
 
 system_options = {
     1: {
-        "name": "Update System",
-        "function": update_system
+        "name": "Users",
+        "function": update
     },
     2: {
+        "name": "Passwords",
+        "function": passwords
+    },
+    3: {
+        "name": "Update",
+        "function": update
+    },
+    4: {
         "name": "Disable Root User",
         "function": disable_root
     },
-    3: {
+    5: {
         "name": "Shadow Permissions",
         "function": shadow_permissions
     },
-    4: {
-        "name": "Password Policy",
-        "function": password_policy
-    },
-    5: {
+    6: {
         "name": "Sudoers File",
         "function": sudoers
-    },
-    6: {
-        "name": "All",
-        "function": system_all
     }
 }
 program_options = {
     1: {
-        "name": "Secure SSH",
-        "function": secure_ssh
-    },
-    2: {
-        "name": "Firewall",
-        "function": firewall
-    },
-    3: {
         "name": "File Scan",
         "function": file_scan
     },
-    4: {
-        "name": "Service Cleanup",
-        "function": service_cleanup
+    2: {
+        "name": "Services",
+        "function": services
+    },
+    3: {
+        "name": "Unwanted",
+        "function": unwanted
     },
     5: {
-        "name": "All",
-        "function": program_all
+        "name": "Firewall",
+        "function": firewall
     }
 }
 
 def print_header():
     # TODO: Add a fancy ascii art header
-    printSuccess('#' * 45)
-    printSuccess("""\n    _/_/_/    _/                               
+    print_success('#' * 45)
+    print_success("""\n    _/_/_/    _/                               
    _/    _/  _/    _/_/      _/_/    _/_/_/    
   _/_/_/    _/  _/_/_/_/  _/_/_/_/  _/    _/   
  _/    _/  _/  _/        _/        _/    _/    
@@ -62,8 +58,8 @@ _/_/_/    _/    _/_/_/    _/_/_/  _/_/_/
                                  _/            
                                 _/
 """)
-    printFailed("THIS IS ENTERLY UNTESTED AT THE MOMENT. DO NOT USE\n")
-    printSuccess('#' * 45)
+    print_failed("THIS IS ENTERLY UNTESTED AT THE MOMENT. DO NOT USE\n")
+    print_success('#' * 45)
     print("1. System Options")
     print("2. Program Options")
     print("3. Exit")
@@ -77,7 +73,7 @@ while True:
 
     selected = system_options if category == 1 else program_options
 
-    printSuccess(f"\n{'#' * 30}\n")
+    print_success(f"\n{'#' * 30}\n")
     for key, value in selected.items():
         print(f"{key}. {value['name']}")
 

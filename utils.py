@@ -6,43 +6,41 @@ def int_input(message, min=None, max=None):
             value = int(input(message + ' '))
 
             if (min is not None and value < min) or (max is not None and value > max):
-                print(f"Please enter a number between {min} and {max}.")
+                print_warning(f"Invalid Input, Enter a number from {min} to {max}.")
             else:
                 return value
         except ValueError:
-            printFailed("Invalid input. Please enter a valid number.")
+            print_warning("Invalid Input, Enter a valid integer number.")
 
-def prompt_input(message):
+def bool_input(message):
     while True:
         value = input(message + ' (y/n) ').lower()
 
-        if value in ['y', 'n', 'yes', 'no']:
-            return value == 'y' or value == "yes"
-        printFailed("Invalid input. Please enter a valid value.")
+        if value in ['y', 'yes', 'n', 'no']:
+            return value == ['y', 'yes']
+        print_warning("Invalid input. Please enter a valid value.")
 
-def printSuccess(message):
+def print_success(message):
     print(f"\033[92m{message}\033[00m")
 
-def printWarning(message):
-    print(f"\033[33m{message}\033[00m")
+def print_warning(message):
+    print(f"\033[33m[!] {message}\033[00m")
 
-def printFailed(message):
+def print_failed(message):
     print(f"\033[91m{message}\033[00m")
 
-# TODO: add proper error handling
 def run(cmd, error=True, output=False):
     try:
         return sys.run(["sudo", *cmd], check=error, capture_output=output)
     except sys.CalledProcessError as e:
-        printFailed(f"Failed to run command: {' '.join(cmd)}")
-        printFailed(f"Error: {e}")
+        print_failed(f"Failed to run command: {' '.join(cmd)}")
+        print_failed(f"Error: {e}")
         exit(1)
 
-def installPackage(package):
+def install_package(package):
     if run(["dpkg", "-l", "|", "grep", "-q", package], output=True).returncode != 0:
-        printWarning(f"Installing {package}...")
-        # TODO: Support multiple package managers
+        print_warning(f"Installing {package}...")
         run(["apt", "install", package, "-yq"])
-        printSuccess(f"{package} has been installed")
+        print_success(f"{package} has been installed")
     else:
-        printWarning(f"{package} is already installed")
+        print_warning(f"{package} is already installed")

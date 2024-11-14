@@ -1,5 +1,6 @@
-from utils import *
-from services import *
+import subprocess as sys
+from utils import sudo, install_package, print_success, print_warning, bool_input
+from scripts.services import secure_ssh
 
 file_extensions = [
     # Video/
@@ -16,7 +17,7 @@ file_extensions = [
 def file_scan():
     files = 0
     for ext in file_extensions:
-        result = run(["find", "/", "-name", f"*.{ext}"], output=True)
+        result = sudo(["find", "/", "-name", f"*.{ext}"], output=True)
         if result:
             # TODO: Save the result to a file
             files += 1
@@ -25,17 +26,22 @@ def file_scan():
 packages = {
     "unwanted": ["wireshark", "ophcrack", "john", "hydra"],
     "services": ["ftp", "openssh-server", "x2goserver", "telnet", "nginx", "apache2", "snmp", "vpn"],
-    "bloat": ["gnome-games", "transmission", "deluge"]
+    "bloat": ["gnome-games", "transmission", "deluge"],
+    "good": ["auditd", "clamav", "chkrootkit"]
 }
 
-def unwanted():
+def packages():
     print_warning("Removing malware/hack tools")
     for package in packages["unwanted"]:
-        run(["apt", "purge", f"*{package}*"])
+        sudo(["apt", "purge", f"*{package}*"])
 
     print_warning("Removeing bloat")
     for package in packages["bloat"]:
-        run(["apt", "purge", f"*{package}*"])
+        sudo(["apt", "purge", f"*{package}*"])
+        
+    for package in packages["good"]:
+        install_package(package)
+        print_warning(f"{package} has been installed")
 
 def services():
     for service in packages["services"]:
@@ -45,22 +51,22 @@ def services():
             if service == "openssh-server":
                 secure_ssh()
 
-            run(["systemctl", "enable", service])
+            sudo(["systemctl", "enable", service])
             print_success(f"{service} has been installed")
         else:
-            run(["apt", "purge", f"*{service}*"])
+            sudo(["apt", "purge", f"*{service}*"])
             print_warning(f"{service} has been uninstalled")
 
 def firewall():
     install_package("ufw")
 
-    run(["ufw", "enable"])
-    run(["ufw", "logging", "on"])
+    sudo(["ufw", "enable"])
+    sudo(["ufw", "logging", "on"])
 
     print_success("UFW has been configured")
 
     # Sysctl settings
-    run(["cp", "/etc/sysctl.conf", "/etc/sysctl.bak"])
+    sudo(["cp", "/etc/sysctl.conf", "/etc/sysctl.bak"])
     print_warning("Config backup has been created (/etc/sysctl.conf.bak)")
 
     settings = {
@@ -78,8 +84,8 @@ def firewall():
     }
 
     for setting, value in settings.items():
-        run(["sed", "-i", f"s/^#*{settings} .*/{settings}={value}/", "/etc/sysctl.conf"])
+        sudo(["sed", "-i", f"s/^#*{setting} .*/{setting}={value}/", "/etc/sysctl.conf"])
 
-    run(["sysctl", "-p"])
+    sudo(["sysctl", "-p"])
 
     print_success("Systemctl network settings have been configured")

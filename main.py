@@ -1,6 +1,6 @@
-from scripts.system import *
-from scripts.program import *
-from utils import *
+from scripts.system import update, passwords, disable_root, shadow_permissions, sudoers
+from scripts.program import file_scan, services, packages, firewall
+from utils import int_input, print_success, print_failed
 
 system_options = {
     1: {
@@ -38,8 +38,8 @@ program_options = {
         "function": services
     },
     3: {
-        "name": "Unwanted",
-        "function": unwanted
+        "name": "Unwanted Packages",
+        "function": packages
     },
     5: {
         "name": "Firewall",

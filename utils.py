@@ -29,7 +29,7 @@ def print_warning(message):
 def print_failed(message):
     print(f"\033[91m{message}\033[00m")
 
-def run(cmd, error=True, output=False):
+def sudo(cmd, error=True, output=False):
     try:
         return sys.run(["sudo", *cmd], check=error, capture_output=output)
     except sys.CalledProcessError as e:
@@ -38,9 +38,9 @@ def run(cmd, error=True, output=False):
         exit(1)
 
 def install_package(package):
-    if run(["dpkg", "-l", "|", "grep", "-q", package], output=True).returncode != 0:
+    if sudo(["dpkg", "-l", "|", "grep", "-q", package], output=True).returncode != 0:
         print_warning(f"Installing {package}...")
-        run(["apt", "install", package, "-yq"])
+        sudo(["apt", "install", package, "-yq"])
         print_success(f"{package} has been installed")
     else:
         print_warning(f"{package} is already installed")
